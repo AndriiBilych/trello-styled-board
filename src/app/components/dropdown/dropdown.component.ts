@@ -8,14 +8,20 @@ import { Component } from '@angular/core';
         <ng-content select="[title]"></ng-content>
       </div>
 
-      <div class="absolute right-0 z-10 mt-4 w-24 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black
-      ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
-           tabindex="-1" [class.hidden]="!opened" (click)="toggle(false)"
+      <div
+        class="absolute right-0 z-10 mt-4 w-24 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black
+      ring-opacity-5 focus:outline-none"
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby="menu-button"
+        tabindex="-1"
+        [class.hidden]="!opened"
+        (click)="toggle(false)"
       >
         <ng-content select="[content]"></ng-content>
       </div>
     </div>
-  `
+  `,
 })
 export class DropdownComponent {
   opened = false;

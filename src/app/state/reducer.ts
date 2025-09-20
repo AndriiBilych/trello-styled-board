@@ -18,26 +18,26 @@ export const initialState: IState = {
   loading: {
     list: false,
     board: false,
-  }
+  },
 };
 
 const _reducer = createReducer(
   initialState,
-  on(actions.actions.setList, (state, {payload}) => {
+  on(actions.actions.setList, (state, { payload }) => {
     return {
       ...state,
       list: payload,
-      loading : {
+      loading: {
         ...state.loading,
         list: false,
       },
     };
   }),
-  on(actions.actions.setBoard, (state, {payload}) => {
+  on(actions.actions.setBoard, (state, { payload }) => {
     return {
       ...state,
       selectedBoard: payload,
-      loading : {
+      loading: {
         ...state.loading,
         board: false,
       },
@@ -46,5 +46,5 @@ const _reducer = createReducer(
 );
 
 export function reducer(state: IState = initialState, action: Action): IState {
-  return  _reducer(state, action);
+  return _reducer(state, action);
 }

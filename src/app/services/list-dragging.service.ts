@@ -11,7 +11,7 @@ import { CalculationService } from './calculation.service';
 import { EdgeScrollingService } from './edge-scrolling.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ListDraggingService {
   readonly #onMoved = new Subject<boolean>();
@@ -37,9 +37,13 @@ export class ListDraggingService {
     listAtMousePosition: HTMLElement,
     clickCallback: (e: MouseEvent) => void,
   ): void {
-    element.addEventListener(
-      EEvenType.mousedown,
-      () => this.listMouseDown(element, selectedBoard, listAtMousePosition, clickCallback),
+    element.addEventListener(EEvenType.mousedown, () =>
+      this.listMouseDown(
+        element,
+        selectedBoard,
+        listAtMousePosition,
+        clickCallback,
+      ),
     );
   }
 
@@ -51,27 +55,50 @@ export class ListDraggingService {
   ): void {
     // console.log('[list mouse down]');
     const listId = getIdFromAttribute(element);
-    this.sourceListIndex = selectedBoard.lists.findIndex(({ id }) => id === listId);
-    this.sourceListPlaceholderData = { ...selectedBoard.lists[this.sourceListIndex] };
+    this.sourceListIndex = selectedBoard.lists.findIndex(
+      ({ id }) => id === listId,
+    );
+    this.sourceListPlaceholderData = {
+      ...selectedBoard.lists[this.sourceListIndex],
+    };
     this.targetListIndex = this.sourceListIndex;
     this.sourceListData = selectedBoard.lists[this.sourceListIndex];
 
     const controller = new AbortController();
     const { signal } = controller;
-    this.#document.addEventListener(EEvenType.mousemove, this.listMouseMove.bind(this, selectedBoard, listAtMousePosition), { signal });
-    this.#document.addEventListener(EEvenType.mouseup, this.listMouseUp.bind(this, controller, selectedBoard, listAtMousePosition, clickCallback), { signal });
+    this.#document.addEventListener(
+      EEvenType.mousemove,
+      this.listMouseMove.bind(this, selectedBoard, listAtMousePosition),
+      { signal },
+    );
+    this.#document.addEventListener(
+      EEvenType.mouseup,
+      this.listMouseUp.bind(
+        this,
+        controller,
+        selectedBoard,
+        listAtMousePosition,
+        clickCallback,
+      ),
+      { signal },
+    );
     this.#edgeScrollingService.initMouseMoveListener(signal);
   }
 
   private listMouseMove(
     selectedBoard: BoardModel,
     listAtMousePosition: HTMLElement,
-    event: MouseEvent
+    event: MouseEvent,
   ): void {
     // console.log('[list mouse move]', );
-    this.targetListIndex = this.#calculationService.findListIndexByMouseX(event.clientX);
+    this.targetListIndex = this.#calculationService.findListIndexByMouseX(
+      event.clientX,
+    );
     if (!this.shouldInsert) {
-      this.sourceListData = selectedBoard.lists.splice(this.sourceListIndex, 1)[0];
+      this.sourceListData = selectedBoard.lists.splice(
+        this.sourceListIndex,
+        1,
+      )[0];
       this.shouldInsert = true;
     } else {
       listAtMousePosition.style.left = `${event.clientX}px`;
@@ -84,7 +111,7 @@ export class ListDraggingService {
     selectedBoard: BoardModel,
     listAtMousePosition: HTMLElement,
     clickCallback: (e: MouseEvent) => void,
-    event: MouseEvent
+    event: MouseEvent,
   ): void {
     // console.log('[list mouse up]', this.shouldInsert);
     controller.abort();

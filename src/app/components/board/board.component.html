@@ -1,24 +1,53 @@
-@if (selectedBoard && listAtMousePosition?.nativeElement && taskAtMousePosition?.nativeElement) {
-  <div class="overflow-x-auto overflow-y-hidden board inline-flex mt-14" #board [id]="selectedBoard.id">
+@if (
+  selectedBoard &&
+  listAtMousePosition?.nativeElement &&
+  taskAtMousePosition?.nativeElement
+) {
+  <div
+    class="overflow-x-auto overflow-y-hidden board inline-flex mt-14"
+    #board
+    [id]="selectedBoard.id"
+  >
     @for (list of selectedBoard.lists; track list.id; let i = $index) {
-      @if (i === listDraggingService.targetListIndex && listDraggingService.shouldInsert) {
+      @if (
+        i === listDraggingService.targetListIndex &&
+        listDraggingService.shouldInsert
+      ) {
         <div class="width-230px relative h-min-content mt-2">
-          <app-list-placeholder [list]="listDraggingService.sourceListData" [hidden]="true"></app-list-placeholder>
+          <app-list-placeholder
+            [list]="listDraggingService.sourceListData"
+            [hidden]="true"
+          ></app-list-placeholder>
         </div>
       }
       <div class="width-230px relative h-min-content mt-2">
-        <app-list (removeListAction)="removeList(i)"
-                  [list]="list"
-                  [initListener]="true"
-                  [selectedBoard]="selectedBoard"
-                  [listAtMousePosition]="listAtMousePosition.nativeElement"
+        <app-list
+          (removeListAction)="removeList(i)"
+          [list]="list"
+          [initListener]="true"
+          [selectedBoard]="selectedBoard"
+          [listAtMousePosition]="listAtMousePosition.nativeElement"
         >
-          @if (!list.tasks.length && i === taskDraggingService.targetListIndex && taskDraggingService.shouldInsert) {
-            <app-task-placeholder [task]="taskDraggingService.sourceTaskData" [hidden]="true"></app-task-placeholder>
+          @if (
+            !list.tasks.length &&
+            i === taskDraggingService.targetListIndex &&
+            taskDraggingService.shouldInsert
+          ) {
+            <app-task-placeholder
+              [task]="taskDraggingService.sourceTaskData"
+              [hidden]="true"
+            ></app-task-placeholder>
           }
           @for (task of list.tasks; track task.id; let j = $index) {
-            @if (i === taskDraggingService.targetListIndex && j === taskDraggingService.targetTaskIndex && taskDraggingService.shouldInsert) {
-              <app-task-placeholder [task]="taskDraggingService.sourceTaskData" [hidden]="true"></app-task-placeholder>
+            @if (
+              i === taskDraggingService.targetListIndex &&
+              j === taskDraggingService.targetTaskIndex &&
+              taskDraggingService.shouldInsert
+            ) {
+              <app-task-placeholder
+                [task]="taskDraggingService.sourceTaskData"
+                [hidden]="true"
+              ></app-task-placeholder>
             }
             <app-task
               [task]="task"
@@ -28,16 +57,29 @@
               [initListener]="true"
               (removeTaskAction)="removeTask(i, j)"
             ></app-task>
-            @if (i === taskDraggingService.targetListIndex && j === list.tasks.length - 1 && taskDraggingService.targetTaskIndex > j && taskDraggingService.shouldInsert) {
-              <app-task-placeholder [task]="taskDraggingService.sourceTaskData" [hidden]="true"></app-task-placeholder>
+            @if (
+              i === taskDraggingService.targetListIndex &&
+              j === list.tasks.length - 1 &&
+              taskDraggingService.targetTaskIndex > j &&
+              taskDraggingService.shouldInsert
+            ) {
+              <app-task-placeholder
+                [task]="taskDraggingService.sourceTaskData"
+                [hidden]="true"
+              ></app-task-placeholder>
             }
           }
         </app-list>
       </div>
-      @if (i === selectedBoard.lists.length - 1 && listDraggingService.targetListIndex > i && listDraggingService.shouldInsert) {
+      @if (
+        i === selectedBoard.lists.length - 1 &&
+        listDraggingService.targetListIndex > i &&
+        listDraggingService.shouldInsert
+      ) {
         <div class="width-230px relative h-min-content mt-2">
-          <app-list-placeholder [list]="listDraggingService.sourceListData"
-                                [hidden]="true"
+          <app-list-placeholder
+            [list]="listDraggingService.sourceListData"
+            [hidden]="true"
           ></app-list-placeholder>
         </div>
       }
@@ -45,9 +87,12 @@
     <div class="width-230px bg-gray-100 rounded-xl relative h-min-content mt-2">
       <div class="flex justify-between px-5 py-2.5">
         @if (!isAddingList) {
-          <button (click)="isAddingList = !isAddingList"
-                  class="border-none w-max"
-          >+ {{ 'list.addAnotherList' | translate }}</button>
+          <button
+            (click)="isAddingList = !isAddingList"
+            class="border-none w-max"
+          >
+            + {{ "list.addAnotherList" | translate }}
+          </button>
         } @else {
           <app-add-list
             (textSubmissionAction)="onTextSubmissionAction($event)"
@@ -56,21 +101,25 @@
       </div>
     </div>
   </div>
-  <div #FakeTask
-       *ngIf="isDraggingTask"
-       class="task flex justify-between rounded break-words bg-blue-100 h-auto p-1">
-    <div class="pl-2.5">{{selectedTaskData.content}}</div>
+  <div
+    #FakeTask
+    *ngIf="isDraggingTask"
+    class="task flex justify-between rounded break-words bg-blue-100 h-auto p-1"
+  >
+    <div class="pl-2.5">{{ selectedTaskData.content }}</div>
   </div>
 } @else {
   <div class="pt-14 w-full h-screen flex justify-center items-center">
-    ...{{ 'loading' | translate }}
+    ...{{ "loading" | translate }}
   </div>
 }
 
 <div #ListAtMousePosition class="width-230px fixed">
   <div id="list-at-mouse-position" class="width-230px relative">
     @if (listDraggingService.sourceListPlaceholderData !== null) {
-      <app-list-placeholder [list]="listDraggingService.sourceListPlaceholderData"></app-list-placeholder>
+      <app-list-placeholder
+        [list]="listDraggingService.sourceListPlaceholderData"
+      ></app-list-placeholder>
     }
   </div>
 </div>
@@ -78,9 +127,9 @@
 <div #TaskAtMousePosition class="width-230px fixed">
   <div id="task-at-mouse-position" class="width-230px relative pr-3">
     @if (taskDraggingService.sourceTaskPlaceholderData !== null) {
-      <app-task-placeholder [task]="taskDraggingService.sourceTaskPlaceholderData"></app-task-placeholder>
+      <app-task-placeholder
+        [task]="taskDraggingService.sourceTaskPlaceholderData"
+      ></app-task-placeholder>
     }
   </div>
 </div>
-
-

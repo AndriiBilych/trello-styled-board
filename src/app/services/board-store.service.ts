@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { BoardModel } from '../models/board.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BoardStoreService {
   #boardsSource = new BehaviorSubject<BoardModel[] | null>(null);
@@ -28,12 +28,19 @@ export class BoardStoreService {
 
   createBoard(): string {
     const id = this.newBoardId().toString();
-    this.setBoards([...(this.#boardsSource?.value ?? []), new BoardModel(id, 'New board')]);
+    this.setBoards([
+      ...(this.#boardsSource?.value ?? []),
+      new BoardModel(id, 'New board'),
+    ]);
     return id;
   }
 
   removeBoard(id: string): string {
-    this.setBoards([...(this.#boardsSource?.value?.filter(({id: boardId}) => id !== boardId) ?? [])]);
+    this.setBoards([
+      ...(this.#boardsSource?.value?.filter(
+        ({ id: boardId }) => id !== boardId,
+      ) ?? []),
+    ]);
     return id;
   }
 
@@ -46,6 +53,12 @@ export class BoardStoreService {
       return 0;
     }
 
-    return Number(this.#boardsSource.value?.reduce((prev, curr) => prev.id > curr.id ? prev : curr).id) + 1;
+    return (
+      Number(
+        this.#boardsSource.value?.reduce((prev, curr) =>
+          prev.id > curr.id ? prev : curr,
+        ).id,
+      ) + 1
+    );
   }
 }

@@ -10,7 +10,7 @@ export enum ActionTypes {
   updateBoard = 'Update Board',
 }
 
-export const actions = createActionGroup( {
+export const actions = createActionGroup({
   source: 'Actions',
   events: {
     [ActionTypes.getList]: emptyProps(),
@@ -18,5 +18,5 @@ export const actions = createActionGroup( {
     [ActionTypes.getBoard]: props<{ payload: string }>(),
     [ActionTypes.setBoard]: props<{ payload: IBoard }>(),
     [ActionTypes.updateBoard]: props<{ payload: IBoard }>(),
-  }
+  },
 });

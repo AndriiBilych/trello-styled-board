@@ -7,7 +7,7 @@ import { DarkModeService } from '../../services/dark-mode.service';
 
 @Component({
   selector: 'app-control-panel',
-  templateUrl: './control-panel.component.html'
+  templateUrl: './control-panel.component.html',
 })
 export class ControlPanelComponent {
   @ViewChild('DeleteModal') confirmation: ElementRef;
@@ -18,7 +18,7 @@ export class ControlPanelComponent {
 
   constructor(
     public readonly boardStoreService: BoardStoreService,
-    public readonly routingService: RoutingService
+    public readonly routingService: RoutingService,
   ) {
     this.#isChangingName = false;
   }

@@ -6,7 +6,6 @@ import { DataService } from './services/data.service';
 import { BoardStoreService } from './services/board-store.service';
 import { BoardModel } from './models/board.model';
 
-
 @Component({
   selector: 'app-root',
   template: `
@@ -20,15 +19,18 @@ export class AppComponent implements OnInit {
   constructor(
     private readonly dataService: DataService,
     private readonly boardStoreService: BoardStoreService,
-    private translate: TranslateService
+    private translate: TranslateService,
   ) {
     translate.setDefaultLang('en');
     translate.use('en');
   }
 
   ngOnInit(): void {
-    this.dataService.getExampleBoards$().pipe(take(1)).subscribe((boards: BoardModel[]) => {
-      this.boardStoreService.setBoards(boards ?? []);
-    });
+    this.dataService
+      .getExampleBoards$()
+      .pipe(take(1))
+      .subscribe((boards: BoardModel[]) => {
+        this.boardStoreService.setBoards(boards ?? []);
+      });
   }
 }

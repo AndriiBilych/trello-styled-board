@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { IBoundingInfo } from '../models/interfaces/bounding-info.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CalculationService {
   // This holds bounding positions, ids of all lists and tasks
@@ -16,11 +16,15 @@ export class CalculationService {
       y: boundingRect.y,
       bottom: boundingRect.bottom,
       right: boundingRect.right,
-      id
+      id,
     });
   }
 
-  public calculateTaskBoundingInfo(elem: HTMLElement, id: string, listId: string): void {
+  public calculateTaskBoundingInfo(
+    elem: HTMLElement,
+    id: string,
+    listId: string,
+  ): void {
     const listBoundingInfo = this.boundingInfo.get(listId);
     if (listBoundingInfo !== undefined) {
       const boundingRect = elem.getBoundingClientRect();
@@ -58,7 +62,9 @@ export class CalculationService {
     }
 
     const values = [...this.boundingInfo.values()];
-    const index = values.findIndex(({ x, right }) => clientX >= x && clientX <= right);
+    const index = values.findIndex(
+      ({ x, right }) => clientX >= x && clientX <= right,
+    );
     const first = values[0];
     const last = values[values.length - 1];
 
@@ -84,7 +90,9 @@ export class CalculationService {
     }
 
     const values = [...taskBoundingInfo.values()];
-    const index = values.findIndex(({ y, bottom }) => clientY >= y && clientY <= bottom);
+    const index = values.findIndex(
+      ({ y, bottom }) => clientY >= y && clientY <= bottom,
+    );
     const first = values[0];
     const last = values[values.length - 1];
 

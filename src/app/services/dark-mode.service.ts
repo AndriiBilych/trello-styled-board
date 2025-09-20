@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { isNotNullOrUndefined } from 'codelyzer/util/isNotNullOrUndefined';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DarkModeService {
   #document = inject(DOCUMENT);

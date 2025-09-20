@@ -1,6 +1,6 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 //Tailwind custom classes
 @layer utilities {
@@ -8,32 +8,32 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
 
-      @apply overflow-ellipsis overflow-hidden break-words
+    @apply overflow-ellipsis overflow-hidden break-words;
   }
 
   .ellipsis-box-1 {
     -webkit-line-clamp: 1;
-    @apply ellipsis-base
+    @apply ellipsis-base;
   }
 
   .ellipsis-box-2 {
     -webkit-line-clamp: 2;
-    @apply ellipsis-base
+    @apply ellipsis-base;
   }
 
   .ellipsis-box-3 {
     -webkit-line-clamp: 3;
-    @apply ellipsis-base
+    @apply ellipsis-base;
   }
 
   .ellipsis-box-4 {
     -webkit-line-clamp: 4;
-    @apply ellipsis-base
+    @apply ellipsis-base;
   }
 
   .ellipsis-box-5 {
     -webkit-line-clamp: 5;
-    @apply ellipsis-base
+    @apply ellipsis-base;
   }
 }
 
@@ -62,4 +62,3 @@ body {
 .width-230px {
   width: 230px;
 }
-

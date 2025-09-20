@@ -5,7 +5,9 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
-  AfterViewInit, OnDestroy, inject
+  AfterViewInit,
+  OnDestroy,
+  inject,
 } from '@angular/core';
 
 import { TaskModel } from '../../models/task.model';
@@ -18,15 +20,17 @@ import { makeId } from '../../tools/make-id.tool';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
-  styles: [`
-    .list {
-      max-height: calc(75vh + 5px);
-    }
+  styles: [
+    `
+      .list {
+        max-height: calc(75vh + 5px);
+      }
 
-    .group:hover .remove-list-button {
-      display: block;
-    }
-  `]
+      .group:hover .remove-list-button {
+        display: block;
+      }
+    `,
+  ],
 })
 export class ListComponent implements AfterViewInit, OnDestroy {
   isAddingTask: boolean;
@@ -45,7 +49,6 @@ export class ListComponent implements AfterViewInit, OnDestroy {
 
   #listDraggingService = inject(ListDraggingService);
   #calculationService = inject(CalculationService);
-
 
   constructor() {
     this.isAddingTask = false;
@@ -75,7 +78,10 @@ export class ListComponent implements AfterViewInit, OnDestroy {
 
   calculateBoundingInfo(): void {
     if (this.listContainer?.nativeElement && this.list?.id) {
-      this.#calculationService.calculateListBoundingInfo(this.listContainer.nativeElement, this.list.id);
+      this.#calculationService.calculateListBoundingInfo(
+        this.listContainer.nativeElement,
+        this.list.id,
+      );
     }
   }
 
@@ -83,7 +89,7 @@ export class ListComponent implements AfterViewInit, OnDestroy {
     this.isChangingName = !this.isChangingName;
   }
 
-  onTextSubmissionAction(event: { text: string, keep: boolean }): void {
+  onTextSubmissionAction(event: { text: string; keep: boolean }): void {
     this.isAddingTask = !this.isAddingTask;
     if (event?.text?.length) {
       const newId = this.generateNewTaskId();
@@ -97,11 +103,10 @@ export class ListComponent implements AfterViewInit, OnDestroy {
     let newId = '';
     do {
       newId = makeId(4);
-      isPresent = this.selectedBoard.lists.findIndex(
-        ({tasks}) => {
-          return tasks.some(({id}) => id === newId);
-        }
-      ) !== -1;
+      isPresent =
+        this.selectedBoard.lists.findIndex(({ tasks }) => {
+          return tasks.some(({ id }) => id === newId);
+        }) !== -1;
     } while (isPresent);
 
     return newId;

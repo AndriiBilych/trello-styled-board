@@ -1,11 +1,14 @@
 import {
   AfterViewInit,
-  Component, effect,
+  Component,
+  effect,
   ElementRef,
-  HostListener, inject,
+  HostListener,
+  inject,
   OnDestroy,
   OnInit,
-  ViewChild, viewChildren
+  ViewChild,
+  viewChildren,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
@@ -30,14 +33,18 @@ import { onInterval } from '../../tools/interval.tool';
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
-  styles: [`
-    .board {
-      height: calc(100vh - 3.5rem);
-    }
-  `]
+  styles: [
+    `
+      .board {
+        height: calc(100vh - 3.5rem);
+      }
+    `,
+  ],
 })
-export class BoardComponent extends ReactiveComponent implements OnInit, AfterViewInit, OnDestroy {
-
+export class BoardComponent
+  extends ReactiveComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   selectedBoard: BoardModel;
   selectedTaskData: TaskModel;
   currentIndex: number;
@@ -64,7 +71,7 @@ export class BoardComponent extends ReactiveComponent implements OnInit, AfterVi
   constructor(
     private readonly boardStoreService: BoardStoreService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly routingService: RoutingService
+    private readonly routingService: RoutingService,
   ) {
     super();
     this.mouseStartingX = null;
@@ -85,43 +92,60 @@ export class BoardComponent extends ReactiveComponent implements OnInit, AfterVi
       this.activatedRoute.params,
       this.boardStoreService.boards$.pipe(
         filter(isNotNullOrUndefined),
-        map((boards: BoardModel[] | null) => boards.map((board) => {
-          board.lists.map((list: ListModel) => {
-            list.tasks.forEach((task: TaskModel) => task.id = `task${task.id}`);
-            list.id = 'list' + list.id;
-            return list;
-          });
-          return board;
-        })),
-      )
-    ]).pipe(this.takeUntil()).subscribe(([{ id }, boards]) => {
-      const board = boards.find(({ id: boardId }) => boardId === id);
-      if (board === undefined) {
-        this.routingService.routeToNotFound();
-      }
-      this.boardStoreService.selectBoard(board);
-    });
+        map((boards: BoardModel[] | null) =>
+          boards.map((board) => {
+            board.lists.map((list: ListModel) => {
+              list.tasks.forEach(
+                (task: TaskModel) => (task.id = `task${task.id}`),
+              );
+              list.id = 'list' + list.id;
+              return list;
+            });
+            return board;
+          }),
+        ),
+      ),
+    ])
+      .pipe(this.takeUntil())
+      .subscribe(([{ id }, boards]) => {
+        const board = boards.find(({ id: boardId }) => boardId === id);
+        if (board === undefined) {
+          this.routingService.routeToNotFound();
+        }
+        this.boardStoreService.selectBoard(board);
+      });
 
-    this.listDraggingService.onMoved$.pipe(this.takeUntil()).subscribe(() => this.initBoundingInfo());
-    this.taskDraggingService.onMoved$.pipe(this.takeUntil()).subscribe(() => this.initBoundingInfo());
+    this.listDraggingService.onMoved$
+      .pipe(this.takeUntil())
+      .subscribe(() => this.initBoundingInfo());
+    this.taskDraggingService.onMoved$
+      .pipe(this.takeUntil())
+      .subscribe(() => this.initBoundingInfo());
   }
 
   ngAfterViewInit(): void {
     onInterval(
       () => this.boardRef?.nativeElement,
-      () => this.#boardDraggingService.initBoardMouseDownListener(this.boardRef.nativeElement),
-      50
+      () =>
+        this.#boardDraggingService.initBoardMouseDownListener(
+          this.boardRef.nativeElement,
+        ),
+      50,
     );
   }
 
   initBoundingInfo() {
     if (this.selectedBoard.lists.length > 0) {
       const taskCount = this.selectedBoard.lists.reduce(
-        (res, current) => res + current.tasks.length, 0
+        (res, current) => res + current.tasks.length,
+        0,
       );
       onInterval(
-        () => this.lists().length === this.selectedBoard.lists.length && this.tasks().length === taskCount,
-        () => this.calculateBoundingInfoForAll(), 50
+        () =>
+          this.lists().length === this.selectedBoard.lists.length &&
+          this.tasks().length === taskCount,
+        () => this.calculateBoundingInfoForAll(),
+        50,
       );
     }
   }
@@ -190,7 +214,7 @@ export class BoardComponent extends ReactiveComponent implements OnInit, AfterVi
     }, 50);
   }
 
-  onTextSubmissionAction(event: { text: string, keep: boolean }) {
+  onTextSubmissionAction(event: { text: string; keep: boolean }) {
     this.isAddingList = !this.isAddingList;
     if (event?.text?.length) {
       const newId = this.generateNewListId();
@@ -204,10 +228,10 @@ export class BoardComponent extends ReactiveComponent implements OnInit, AfterVi
     let newId = '';
     do {
       newId = makeId(4);
-      isPresent = this.selectedBoard.lists.findIndex(({id}) => id === newId) !== -1;
+      isPresent =
+        this.selectedBoard.lists.findIndex(({ id }) => id === newId) !== -1;
     } while (isPresent);
 
     return newId;
   }
 }
-

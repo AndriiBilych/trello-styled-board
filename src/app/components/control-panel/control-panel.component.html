@@ -1,60 +1,87 @@
 <header class="dark:bg-gray-600 bg-gray-100 h-14 fixed top-0 w-full z-10">
-  <nav class="px-4 h-full w-full flex items-center justify-between" aria-label="Global">
-    <ng-container *ngIf="{board: boardStoreService.selectedBoard()} as obs">
+  <nav
+    class="px-4 h-full w-full flex items-center justify-between"
+    aria-label="Global"
+  >
+    <ng-container *ngIf="{ board: boardStoreService.selectedBoard() } as obs">
       <div class="flex lg:flex-1 lg:gap-x-1 h-full">
         <ng-container *ngIf="obs.board">
-          <div class="flex items-center text-sm font-semibold leading-6 h-full hover:bg-blue-100 hover:text-gray-500
-             dark:text-white transition px-4 rounded cursor-pointer w-200 dark:hover:text-black dark:hover:bg-gray-400" [title]="obs.board.title">
-            <span (click)="toggleIsChangingName()" *ngIf="!isChangingName; else titleInput"
-               class="ellipsis-box-1"
+          <div
+            class="flex items-center text-sm font-semibold leading-6 h-full hover:bg-blue-100 hover:text-gray-500 dark:text-white transition px-4 rounded cursor-pointer w-200 dark:hover:text-black dark:hover:bg-gray-400"
+            [title]="obs.board.title"
+          >
+            <span
+              (click)="toggleIsChangingName()"
+              *ngIf="!isChangingName; else titleInput"
+              class="ellipsis-box-1"
             >
               {{ obs.board.title }}
             </span>
           </div>
-          <a (click)="DeleteModal.style.display = 'block'"
-             class="flex items-center text-sm font-semibold leading-6 h-full hover:bg-blue-100 hover:text-gray-500
-             transition px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400" title="Delete board"
-          >{{ 'deleteBoard' | translate }}</a>
+          <a
+            (click)="DeleteModal.style.display = 'block'"
+            class="flex items-center text-sm font-semibold leading-6 h-full hover:bg-blue-100 hover:text-gray-500 transition px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400"
+            title="Delete board"
+            >{{ "deleteBoard" | translate }}</a
+          >
         </ng-container>
       </div>
       <div class="hidden lg:flex h-full">
-        <a routerLink="/home"
-           class="flex items-center text-sm font-semibold leading-6 hover:bg-blue-100 hover:text-gray-500 transition
-           px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400" title="Boards"
-        >{{ 'logo.title' | translate }}</a>
+        <a
+          routerLink="/home"
+          class="flex items-center text-sm font-semibold leading-6 hover:bg-blue-100 hover:text-gray-500 transition px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400"
+          title="Boards"
+          >{{ "logo.title" | translate }}</a
+        >
       </div>
       <div class="hidden lg:flex lg:flex-1 lg:gap-x-1 lg:justify-end h-full">
         <a
-          class="flex items-center text-sm font-semibold leading-6 hover:bg-blue-100 hover:text-gray-500 transition
-          px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400" title="Dark mode"
+          class="flex items-center text-sm font-semibold leading-6 hover:bg-blue-100 hover:text-gray-500 transition px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400"
+          title="Dark mode"
         >
           <app-dropdown>
-            <a title
-              class="flex items-center text-sm font-semibold leading-6 hover:bg-blue-100 hover:text-gray-500 transition
-              px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400"
-              id="menu-button" aria-expanded="true" aria-haspopup="true"
-            >{{ 'language' | translate }}</a>
+            <a
+              title
+              class="flex items-center text-sm font-semibold leading-6 hover:bg-blue-100 hover:text-gray-500 transition px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400"
+              id="menu-button"
+              aria-expanded="true"
+              aria-haspopup="true"
+              >{{ "language" | translate }}</a
+            >
             <div content class="py-1" role="none">
-              <a class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900
-                  dark:text-white dark:hover:text-black dark:hover:bg-gray-400" [class.bg-gray-100]="isEnglish"
-                 (click)="useEnglish()"
-                 role="menuitem" tabindex="-1" id="menu-item-0">en</a>
-              <a class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900
-                  dark:text-white dark:hover:text-black dark:hover:bg-gray-400" [class.bg-gray-100]="isPolish"
-                 (click)="usePolish()"
-                 role="menuitem" tabindex="-1" id="menu-item-1">pl</a>
+              <a
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:text-black dark:hover:bg-gray-400"
+                [class.bg-gray-100]="isEnglish"
+                (click)="useEnglish()"
+                role="menuitem"
+                tabindex="-1"
+                id="menu-item-0"
+                >en</a
+              >
+              <a
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:text-black dark:hover:bg-gray-400"
+                [class.bg-gray-100]="isPolish"
+                (click)="usePolish()"
+                role="menuitem"
+                tabindex="-1"
+                id="menu-item-1"
+                >pl</a
+              >
             </div>
           </app-dropdown>
         </a>
         <a
-          class="flex items-center text-sm font-semibold leading-6 hover:bg-blue-100 hover:text-gray-500 transition
-          px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400" title="Dark mode"
+          class="flex items-center text-sm font-semibold leading-6 hover:bg-blue-100 hover:text-gray-500 transition px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400"
+          title="Dark mode"
           (click)="toggleDarkMode()"
-        >{{ 'darkMode' | translate }}</a>
-        <a (click)="AboutModal.style.display = 'block'"
-          class="flex items-center justify-center text-sm font-semibold leading-6 hover:bg-blue-100 hover:text-gray-500
-          transition px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400" title="About"
-        >{{ 'about' | translate }}</a>
+          >{{ "darkMode" | translate }}</a
+        >
+        <a
+          (click)="AboutModal.style.display = 'block'"
+          class="flex items-center justify-center text-sm font-semibold leading-6 hover:bg-blue-100 hover:text-gray-500 transition px-4 rounded cursor-pointer dark:text-white dark:hover:text-black dark:hover:bg-gray-400"
+          title="About"
+          >{{ "about" | translate }}</a
+        >
       </div>
     </ng-container>
   </nav>
@@ -117,35 +144,49 @@
 <ng-template #titleInput>
   <ng-container *ngIf="boardStoreService.selectedBoard() as board">
     <app-input-form
-      (textSubmissionAction)="toggleIsChangingName(); board.title = $event.text.length > 0 ? $event.text : board.title"
+      (textSubmissionAction)="
+        toggleIsChangingName();
+        board.title = $event.text.length > 0 ? $event.text : board.title
+      "
       [textToShow]="board.title"
     ></app-input-form>
   </ng-container>
 </ng-template>
 
-<div #DeleteModal class="fixed hidden z-10 left-0 top-0 w-screen h-screen overflow-auto bg-black bg-opacity-40"
-     (click)="DeleteModal.style.display = 'none'">
+<div
+  #DeleteModal
+  class="fixed hidden z-10 left-0 top-0 w-screen h-screen overflow-auto bg-black bg-opacity-40"
+  (click)="DeleteModal.style.display = 'none'"
+>
   <div class="flex justify-center items-center w-full h-full">
     <ng-container *ngIf="boardStoreService.selectedBoard() as board">
-      <div class="dark:bg-gray-600 dark:text-white bg-white p-5 max-w-xl w-3/5 rounded-xl relative" (click)="$event.stopPropagation()">
+      <div
+        class="dark:bg-gray-600 dark:text-white bg-white p-5 max-w-xl w-3/5 rounded-xl relative"
+        (click)="$event.stopPropagation()"
+      >
         <button
           class="absolute top-3 right-3 text-xl font-semibold leading-6 dark:hover:bg-gray-400 dark:hover:text-black hover:bg-blue-100 hover:text-gray-500 transition py-2 px-4 rounded cursor-pointer"
           (click)="DeleteModal.style.display = 'none'"
-        >&times;
+        >
+          &times;
         </button>
         <div class="header">
-          <h3>{{ 'deleteModal.question' | translate:{ title: board.title } }}</h3>
+          <h3>
+            {{ "deleteModal.question" | translate: { title: board.title } }}
+          </h3>
         </div>
         <div class="flex items-center justify-center gap-3.5 mt-3">
           <button
             class="text-sm font-semibold leading-6 dark:hover:bg-gray-400 dark:hover:text-black hover:bg-blue-100 hover:text-gray-500 transition py-3 px-6 rounded cursor-pointer"
-            (click)="removeBoard(board.id); DeleteModal.style.display = 'none'">
-            {{ 'deleteModal.yes' | translate }}
+            (click)="removeBoard(board.id); DeleteModal.style.display = 'none'"
+          >
+            {{ "deleteModal.yes" | translate }}
           </button>
           <button
             class="text-sm font-semibold leading-6 dark:hover:bg-gray-400 dark:hover:text-black hover:bg-blue-100 hover:text-gray-500 transition py-3 px-6 rounded cursor-pointer"
-            (click)="DeleteModal.style.display = 'none'">
-            {{ 'deleteModal.no' | translate }}
+            (click)="DeleteModal.style.display = 'none'"
+          >
+            {{ "deleteModal.no" | translate }}
           </button>
         </div>
       </div>
@@ -153,48 +194,63 @@
   </div>
 </div>
 
-<div #AboutModal class="fixed hidden z-10 left-0 top-0 w-screen h-screen overflow-auto bg-black bg-opacity-40">
+<div
+  #AboutModal
+  class="fixed hidden z-10 left-0 top-0 w-screen h-screen overflow-auto bg-black bg-opacity-40"
+>
   <div class="flex justify-center items-center w-full h-full">
-    <div class="dark:bg-gray-600 dark:text-white bg-white p-5 max-w-xl w-3/5 rounded-xl relative">
-
-      <button class="absolute top-3 right-3 text-xl font-semibold leading-6 dark:hover:bg-gray-400 dark:hover:text-black hover:bg-blue-100 hover:text-gray-500 transition py-2 px-4 rounded cursor-pointer"
-              (click)="AboutModal.style.display = 'none'"
+    <div
+      class="dark:bg-gray-600 dark:text-white bg-white p-5 max-w-xl w-3/5 rounded-xl relative"
+    >
+      <button
+        class="absolute top-3 right-3 text-xl font-semibold leading-6 dark:hover:bg-gray-400 dark:hover:text-black hover:bg-blue-100 hover:text-gray-500 transition py-2 px-4 rounded cursor-pointer"
+        (click)="AboutModal.style.display = 'none'"
       >
         &times;
       </button>
       <div class="flex justify-center font-semibold leading-6">
-        <h3>{{ 'aboutModal.description' | translate }}</h3>
+        <h3>{{ "aboutModal.description" | translate }}</h3>
       </div>
 
       <p class="mt-5">
-        <span class="mb-9">{{ 'aboutModal.content1' | translate }}</span>
-        {{ 'aboutModal.content2' | translate }}
+        <span class="mb-9">{{ "aboutModal.content1" | translate }}</span>
+        {{ "aboutModal.content2" | translate }}
       </p>
 
       <div class="mt-5">
         <div class="flex justify-center font-semibold leading-6">
-          <h3>{{ 'aboutModal.howToUse' | translate }}</h3>
+          <h3>{{ "aboutModal.howToUse" | translate }}</h3>
         </div>
         <div class="flex justify-center">
           <ul>
-            <li>{{ 'aboutModal.howToUse1' | translate }}</li>
-            <li>{{ 'aboutModal.howToUse2' | translate }}</li>
+            <li>{{ "aboutModal.howToUse1" | translate }}</li>
+            <li>{{ "aboutModal.howToUse2" | translate }}</li>
           </ul>
         </div>
       </div>
 
       <div class="flex justify-center mt-5">
         <div class="author">
-          <div class="flex justify-center">{{ 'aboutModal.madeBy' | translate }}<strong>&nbsp;Andrii Bilych</strong></div>
+          <div class="flex justify-center">
+            {{ "aboutModal.madeBy" | translate
+            }}<strong>&nbsp;Andrii Bilych</strong>
+          </div>
           <div class="flex justify-center gap-3">
-            <a class="text-sm font-semibold leading-6 hover:bg-blue-100 dark:hover:bg-gray-400 dark:hover:text-black hover:text-gray-500 transition py-3 px-6 rounded cursor-pointer"
-              href="https://www.linkedin.com/in/andrii-bilych/" target="_blank">LinkedIn</a>
-            <a class="text-sm font-semibold leading-6 hover:bg-blue-100 dark:hover:bg-gray-400 dark:hover:text-black hover:text-gray-500 transition py-3 px-6 rounded cursor-pointer"
-              href="https://github.com/AndriiBilych" target="_blank">Github</a>
+            <a
+              class="text-sm font-semibold leading-6 hover:bg-blue-100 dark:hover:bg-gray-400 dark:hover:text-black hover:text-gray-500 transition py-3 px-6 rounded cursor-pointer"
+              href="https://www.linkedin.com/in/andrii-bilych/"
+              target="_blank"
+              >LinkedIn</a
+            >
+            <a
+              class="text-sm font-semibold leading-6 hover:bg-blue-100 dark:hover:bg-gray-400 dark:hover:text-black hover:text-gray-500 transition py-3 px-6 rounded cursor-pointer"
+              href="https://github.com/AndriiBilych"
+              target="_blank"
+              >Github</a
+            >
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>

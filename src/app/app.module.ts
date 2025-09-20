@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -27,7 +31,6 @@ import { AddTaskComponent } from './components/inputs/add-task/add-task.componen
 import { DropdownComponent } from './components/dropdown/dropdown.component';
 import { reducer } from './state/reducer';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +49,7 @@ import { reducer } from './state/reducer';
     NotFoundPageComponent,
     ListPlaceholderComponent,
     TaskPlaceholderComponent,
-    DropdownComponent
+    DropdownComponent,
   ],
   bootstrap: [AppComponent],
   imports: [
@@ -56,7 +59,7 @@ import { reducer } from './state/reducer';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     StoreModule.forRoot({
-      app: reducer
+      app: reducer,
     }),
 
     // ngx-translate and the loader module
@@ -64,13 +67,13 @@ import { reducer } from './state/reducer';
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    })
+        deps: [HttpClient],
+      },
+    }),
   ],
   providers: [provideHttpClient(withInterceptorsFromDi())],
 })
-export class AppModule { }
+export class AppModule {}
 
 // required for AOT compilation
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {

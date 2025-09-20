@@ -4,19 +4,15 @@ import { DOCUMENT } from '@angular/common';
 import { EEvenType } from '../enums/even-type.enum';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BoardDraggingService {
-
   #document: Document = inject(DOCUMENT);
   #deltaX = 0;
 
-  public initBoardMouseDownListener(
-    element: HTMLElement,
-  ): void {
-    element.addEventListener(
-      EEvenType.mousedown,
-      (event: MouseEvent) => this.boardMouseDown(element, event)
+  public initBoardMouseDownListener(element: HTMLElement): void {
+    element.addEventListener(EEvenType.mousedown, (event: MouseEvent) =>
+      this.boardMouseDown(element, event),
     );
   }
 
@@ -27,8 +23,16 @@ export class BoardDraggingService {
 
       const controller = new AbortController();
       const { signal } = controller;
-      this.#document.addEventListener(EEvenType.mousemove, this.boardMouseMove.bind(this), { signal });
-      this.#document.addEventListener(EEvenType.mouseup, this.boardMouseUp.bind(this, controller), { signal });
+      this.#document.addEventListener(
+        EEvenType.mousemove,
+        this.boardMouseMove.bind(this),
+        { signal },
+      );
+      this.#document.addEventListener(
+        EEvenType.mouseup,
+        this.boardMouseUp.bind(this, controller),
+        { signal },
+      );
     }
   }
 
@@ -38,10 +42,7 @@ export class BoardDraggingService {
     window.scrollBy({ left: deltaMouseMoveX * 1.5 });
   }
 
-  private boardMouseUp(
-    controller: AbortController,
-    event: MouseEvent
-  ): void {
+  private boardMouseUp(controller: AbortController, event: MouseEvent): void {
     event.stopImmediatePropagation();
     controller.abort();
   }

@@ -28,12 +28,10 @@ export class HomepageComponent {
         title: this.translateService.instant('section.title'),
         description: this.translateService.instant('section.description'),
         additionAllowed: true,
-        boards
+        boards,
       };
-    })
+    }),
   );
 
-  constructor(
-    private readonly boardStoreService: BoardStoreService
-  ) {}
+  constructor(private readonly boardStoreService: BoardStoreService) {}
 }
