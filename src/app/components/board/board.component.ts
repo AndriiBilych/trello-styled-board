@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   Component,
-  effect,
   ElementRef,
   HostListener,
   inject,
@@ -29,6 +28,9 @@ import { TaskDraggingService } from '../../services/task-dragging.service';
 import { TaskComponent } from '../task/task.component';
 import { BoardDraggingService } from '../../services/board-dragging.service';
 import { onInterval } from '../../tools/interval.tool';
+import { Store } from '@ngrx/store';
+import { selectSelectedBoard } from '../../state/boards.selectors';
+import { boardsActions } from '../../state/boards.actions';
 
 @Component({
   selector: 'app-board',
@@ -72,16 +74,16 @@ export class BoardComponent
     private readonly boardStoreService: BoardStoreService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly routingService: RoutingService,
+    private readonly store: Store,
   ) {
     super();
     this.mouseStartingX = null;
     this.selectedBoard = null;
     this.currentIndex = null;
 
-    effect(() => {
-      const data = this.boardStoreService.selectedBoard();
-      if (isNotNullOrUndefined(data)) {
-        this.selectedBoard = data;
+    this.store.select(selectSelectedBoard).subscribe((board: BoardModel) => {
+      if (isNotNullOrUndefined(board)) {
+        this.selectedBoard = board;
         this.initBoundingInfo();
       }
     });
@@ -93,16 +95,17 @@ export class BoardComponent
       this.boardStoreService.boards$.pipe(
         filter(isNotNullOrUndefined),
         map((boards: BoardModel[] | null) =>
-          boards.map((board) => {
-            board.lists.map((list: ListModel) => {
-              list.tasks.forEach(
-                (task: TaskModel) => (task.id = `task${task.id}`),
-              );
-              list.id = 'list' + list.id;
-              return list;
-            });
-            return board;
-          }),
+          boards.map((board) => ({
+            ...board,
+            lists: board.lists.map((list: ListModel) => ({
+              ...list,
+              id: 'list' + list.id,
+              tasks: list.tasks.map((task: TaskModel) => ({
+                ...task,
+                id: `task${task.id}`,
+              })),
+            })),
+          })),
         ),
       ),
     ])
@@ -112,7 +115,7 @@ export class BoardComponent
         if (board === undefined) {
           this.routingService.routeToNotFound();
         }
-        this.boardStoreService.selectBoard(board);
+        this.store.dispatch(boardsActions.setBoard({ payload: board }));
       });
 
     this.listDraggingService.onMoved$
@@ -152,7 +155,7 @@ export class BoardComponent
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.boardStoreService.selectBoard(null);
+    this.store.dispatch(boardsActions.setBoard({ payload: null }));
   }
 
   @HostListener('document:wheel', ['$event'])

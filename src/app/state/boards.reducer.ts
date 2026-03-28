@@ -1,7 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
 import { IBoard } from '../models/interfaces/board.interface';
-import * as actions from './actions';
+import { boardsActions } from './boards.actions';
 
 export interface IState {
   list: IBoard[];
@@ -23,7 +23,7 @@ export const initialState: IState = {
 
 const _reducer = createReducer(
   initialState,
-  on(actions.actions.setList, (state, { payload }) => {
+  on(boardsActions.setList, (state, { payload }) => {
     return {
       ...state,
       list: payload,
@@ -33,7 +33,7 @@ const _reducer = createReducer(
       },
     };
   }),
-  on(actions.actions.setBoard, (state, { payload }) => {
+  on(boardsActions.setBoard, (state, { payload }) => {
     return {
       ...state,
       selectedBoard: payload,
@@ -45,6 +45,9 @@ const _reducer = createReducer(
   }),
 );
 
-export function reducer(state: IState = initialState, action: Action): IState {
+export function boardsReducer(
+  state: IState = initialState,
+  action: Action,
+): IState {
   return _reducer(state, action);
 }

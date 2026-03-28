@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {
   HttpClient,
@@ -29,7 +29,8 @@ import { AddListComponent } from './components/inputs/add-list/add-list.componen
 import { TaskPlaceholderComponent } from './components/task-placeholder/task-placeholder.component';
 import { AddTaskComponent } from './components/inputs/add-task/add-task.component';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
-import { reducer } from './state/reducer';
+import { boardsReducer } from './state/boards.reducer';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,7 @@ import { reducer } from './state/reducer';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     StoreModule.forRoot({
-      app: reducer,
+      boards: boardsReducer,
     }),
 
     // ngx-translate and the loader module
@@ -69,6 +70,15 @@ import { reducer } from './state/reducer';
         useFactory: HttpLoaderFactory,
         deps: [HttpClient],
       },
+    }),
+
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: !isDevMode(), // Restrict extension to log-only mode
+      autoPause: true, // Pauses recording actions and state changes when the extension window is not open
+      trace: false, //  If set to true, will include stack trace for every dispatched action, so you can see it in trace tab jumping directly to that part of code
+      traceLimit: 75, // maximum stack trace frames to be stored (in case trace option was provided as true)
+      connectInZone: true, // If set to true, the connection is established within the Angular zone
     }),
   ],
   providers: [provideHttpClient(withInterceptorsFromDi())],

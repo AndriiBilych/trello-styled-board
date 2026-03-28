@@ -10,7 +10,7 @@ export enum ActionTypes {
   updateBoard = 'Update Board',
 }
 
-export const actions = createActionGroup({
+export const boardsActions = createActionGroup({
   source: 'Actions',
   events: {
     [ActionTypes.getList]: emptyProps(),

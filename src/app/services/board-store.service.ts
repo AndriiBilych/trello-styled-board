@@ -1,5 +1,4 @@
 import { Injectable, signal } from '@angular/core';
-import { isNotNullOrUndefined } from 'codelyzer/util/isNotNullOrUndefined';
 import { BehaviorSubject } from 'rxjs';
 
 import { BoardModel } from '../models/board.model';
@@ -15,15 +14,6 @@ export class BoardStoreService {
 
   setBoards(data: BoardModel[]) {
     this.#boardsSource.next(data);
-  }
-
-  selectBoard(board: BoardModel | null) {
-    if (isNotNullOrUndefined(board)) {
-      this.setSelectedBoard(board);
-      return;
-    }
-
-    this.setSelectedBoard(null);
   }
 
   createBoard(): string {
@@ -42,10 +32,6 @@ export class BoardStoreService {
       ) ?? []),
     ]);
     return id;
-  }
-
-  private setSelectedBoard(data: BoardModel | null) {
-    this.selectedBoard.set(data);
   }
 
   private newBoardId(): number {
