@@ -1,3 +1,5 @@
+import { IBoard } from '../models/interfaces/board.interface';
+
 export function makeId(length: number): string {
   let result = '';
   const characters =
@@ -11,4 +13,16 @@ export function makeId(length: number): string {
     counter += 1;
   }
   return result;
+}
+
+export function newBoardId(boards: IBoard[]): number {
+  if (!boards?.length) {
+    return 0;
+  }
+
+  return (
+    Number(
+      boards?.reduce((prev, curr) => (prev.id > curr.id ? prev : curr)).id,
+    ) + 1
+  );
 }

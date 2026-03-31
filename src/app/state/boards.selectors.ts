@@ -13,3 +13,7 @@ export const selectSelectedBoard = createSelector(
     return state.selectedBoard;
   },
 );
+
+export const selectBoardList = createSelector(selectState, (state: IState) => {
+  return state.boardList;
+});

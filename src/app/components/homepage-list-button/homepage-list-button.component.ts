@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { RoutingService } from '../../services/routing.service';
-import { BoardStoreService } from '../../services/board-store.service';
+import { Store } from '@ngrx/store';
+import { boardsActions } from '../../state/boards.actions';
+import { selectBoardList } from '../../state/boards.selectors';
+import { newBoardId } from '../../tools/make-id.tool';
+import { IBoard } from '../../models/interfaces/board.interface';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-homepage-list-button',
@@ -43,11 +48,17 @@ import { BoardStoreService } from '../../services/board-store.service';
 export class HomepageListButtonComponent {
   constructor(
     public readonly routingService: RoutingService,
-    public readonly boardStoreService: BoardStoreService,
+    public readonly store: Store,
   ) {}
 
   createBoard(): void {
-    const id = this.boardStoreService.createBoard();
-    this.routingService.routeToEditBoard(id);
+    this.store
+      .select(selectBoardList)
+      .pipe(take(1))
+      .subscribe((boards: IBoard[]) => {
+        const id = newBoardId(boards).toString();
+        this.store.dispatch(boardsActions.createBoard({ payload: id }));
+        this.routingService.routeToEditBoard(id);
+      });
   }
 }

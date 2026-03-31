@@ -15,7 +15,6 @@ import { combineLatest } from 'rxjs';
 
 import { BoardModel } from '../../models/board.model';
 import { ListModel } from '../../models/list.model';
-import { BoardStoreService } from '../../services/board-store.service';
 import { TaskModel } from '../../models/task.model';
 import { isNotNullOrUndefined } from 'codelyzer/util/isNotNullOrUndefined';
 import { ReactiveComponent } from '../../tools/reactive';
@@ -29,7 +28,10 @@ import { TaskComponent } from '../task/task.component';
 import { BoardDraggingService } from '../../services/board-dragging.service';
 import { onInterval } from '../../tools/interval.tool';
 import { Store } from '@ngrx/store';
-import { selectSelectedBoard } from '../../state/boards.selectors';
+import {
+  selectBoardList,
+  selectSelectedBoard,
+} from '../../state/boards.selectors';
 import { boardsActions } from '../../state/boards.actions';
 
 @Component({
@@ -71,7 +73,6 @@ export class BoardComponent
   #boardDraggingService = inject(BoardDraggingService);
 
   constructor(
-    private readonly boardStoreService: BoardStoreService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly routingService: RoutingService,
     private readonly store: Store,
@@ -92,7 +93,7 @@ export class BoardComponent
   ngOnInit(): void {
     combineLatest([
       this.activatedRoute.params,
-      this.boardStoreService.boards$.pipe(
+      this.store.select(selectBoardList).pipe(
         filter(isNotNullOrUndefined),
         map((boards: BoardModel[] | null) =>
           boards.map((board) => ({

@@ -3,19 +3,19 @@
     class="px-4 h-full w-full flex items-center justify-between"
     aria-label="Global"
   >
-    <ng-container *ngIf="{ board: boardStoreService.selectedBoard() } as obs">
+    <ng-container *ngIf="selectedBoard | async as board">
       <div class="flex lg:flex-1 lg:gap-x-1 h-full">
-        <ng-container *ngIf="obs.board">
+        <ng-container *ngIf="board">
           <div
             class="flex items-center text-sm font-semibold leading-6 h-full hover:bg-blue-100 hover:text-gray-500 dark:text-white transition px-4 rounded cursor-pointer w-200 dark:hover:text-black dark:hover:bg-gray-400"
-            [title]="obs.board.title"
+            [title]="board.title"
           >
             <span
               (click)="toggleIsChangingName()"
               *ngIf="!isChangingName; else titleInput"
               class="ellipsis-box-1"
             >
-              {{ obs.board.title }}
+              {{ board.title }}
             </span>
           </div>
           <a
@@ -142,7 +142,7 @@
 </header>
 
 <ng-template #titleInput>
-  <ng-container *ngIf="boardStoreService.selectedBoard() as board">
+  <ng-container *ngIf="selectedBoard | async as board">
     <app-input-form
       (textSubmissionAction)="
         toggleIsChangingName();
@@ -159,7 +159,7 @@
   (click)="DeleteModal.style.display = 'none'"
 >
   <div class="flex justify-center items-center w-full h-full">
-    <ng-container *ngIf="boardStoreService.selectedBoard() as board">
+    <ng-container *ngIf="selectedBoard | async as board">
       <div
         class="dark:bg-gray-600 dark:text-white bg-white p-5 max-w-xl w-3/5 rounded-xl relative"
         (click)="$event.stopPropagation()"

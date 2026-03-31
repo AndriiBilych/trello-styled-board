@@ -4,7 +4,8 @@ import { isNotNullOrUndefined } from 'codelyzer/util/isNotNullOrUndefined';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BoardModel } from '../../models/board.model';
-import { BoardStoreService } from '../../services/board-store.service';
+import { Store } from '@ngrx/store';
+import { selectBoardList } from '../../state/boards.selectors';
 
 @Component({
   selector: 'app-homepage',
@@ -20,7 +21,7 @@ export class HomepageComponent {
 
   translateService = inject(TranslateService);
 
-  section$ = this.boardStoreService.boards$.pipe(
+  section$ = this.store.select(selectBoardList).pipe(
     filter((boards: BoardModel[] | null) => isNotNullOrUndefined(boards)),
     map((boards) => {
       return {
@@ -33,5 +34,5 @@ export class HomepageComponent {
     }),
   );
 
-  constructor(private readonly boardStoreService: BoardStoreService) {}
+  constructor(private readonly store: Store) {}
 }

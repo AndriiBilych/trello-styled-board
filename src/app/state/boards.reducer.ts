@@ -2,9 +2,10 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { IBoard } from '../models/interfaces/board.interface';
 import { boardsActions } from './boards.actions';
+import { BoardModel } from '../models/board.model';
 
 export interface IState {
-  list: IBoard[];
+  boardList: IBoard[];
   selectedBoard: IBoard | null;
   loading: {
     list: boolean;
@@ -13,7 +14,7 @@ export interface IState {
 }
 
 export const initialState: IState = {
-  list: [],
+  boardList: [],
   selectedBoard: null,
   loading: {
     list: false,
@@ -23,10 +24,10 @@ export const initialState: IState = {
 
 const _reducer = createReducer(
   initialState,
-  on(boardsActions.setList, (state, { payload }) => {
+  on(boardsActions.setBoardList, (state: IState, { payload }) => {
     return {
       ...state,
-      list: payload,
+      boardList: payload,
       loading: {
         ...state.loading,
         list: false,
@@ -37,6 +38,27 @@ const _reducer = createReducer(
     return {
       ...state,
       selectedBoard: payload,
+      loading: {
+        ...state.loading,
+        board: false,
+      },
+    };
+  }),
+  on(boardsActions.createBoard, (state, { payload }) => {
+    return {
+      ...state,
+      boardList: [...state.boardList, new BoardModel(payload, 'New board')],
+      loading: {
+        ...state.loading,
+        board: false,
+      },
+    };
+  }),
+  on(boardsActions.removeBoard, (state, { payload }) => {
+    return {
+      ...state,
+      boardList:
+        state.boardList.filter(({ id: boardId }) => payload !== boardId) ?? [],
       loading: {
         ...state.loading,
         board: false,

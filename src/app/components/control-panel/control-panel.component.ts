@@ -1,9 +1,11 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-import { BoardStoreService } from '../../services/board-store.service';
 import { RoutingService } from '../../services/routing.service';
 import { DarkModeService } from '../../services/dark-mode.service';
+import { Store } from '@ngrx/store';
+import { boardsActions } from '../../state/boards.actions';
+import { selectSelectedBoard } from '../../state/boards.selectors';
 
 @Component({
   selector: 'app-control-panel',
@@ -16,8 +18,10 @@ export class ControlPanelComponent {
   #darkModeService = inject(DarkModeService);
   #translateService = inject(TranslateService);
 
+  selectedBoard = this.store.select(selectSelectedBoard);
+
   constructor(
-    public readonly boardStoreService: BoardStoreService,
+    public readonly store: Store,
     public readonly routingService: RoutingService,
   ) {
     this.#isChangingName = false;
@@ -28,7 +32,7 @@ export class ControlPanelComponent {
   }
 
   removeBoard(id: string): void {
-    this.boardStoreService.removeBoard(id);
+    this.store.dispatch(boardsActions.removeBoard({ payload: id }));
     this.routingService.routeToHomepage();
   }
 
