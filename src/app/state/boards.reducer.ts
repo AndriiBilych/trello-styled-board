@@ -23,48 +23,63 @@ export const initialState: IState = {
 };
 
 const _reducer = createReducer(
-  initialState,
-  on(boardsActions.setBoardList, (state: IState, { payload }) => {
-    return {
-      ...state,
-      boardList: payload,
-      loading: {
-        ...state.loading,
-        list: false,
-      },
-    };
-  }),
-  on(boardsActions.setBoard, (state, { payload }) => {
-    return {
-      ...state,
-      selectedBoard: payload,
-      loading: {
-        ...state.loading,
-        board: false,
-      },
-    };
-  }),
-  on(boardsActions.createBoard, (state, { payload }) => {
-    return {
-      ...state,
-      boardList: [...state.boardList, new BoardModel(payload, 'New board')],
-      loading: {
-        ...state.loading,
-        board: false,
-      },
-    };
-  }),
-  on(boardsActions.removeBoard, (state, { payload }) => {
-    return {
-      ...state,
-      boardList:
-        state.boardList.filter(({ id: boardId }) => payload !== boardId) ?? [],
-      loading: {
-        ...state.loading,
-        board: false,
-      },
-    };
-  }),
+    initialState,
+    on(boardsActions.setBoardList, (state: IState, { payload }) => {
+      return {
+        ...state,
+        boardList: payload,
+        loading: {
+          ...state.loading,
+          list: false,
+        },
+      };
+    }),
+    on(boardsActions.setBoard, (state, { payload }) => {
+      return {
+        ...state,
+        selectedBoard: payload,
+        loading: {
+          ...state.loading,
+          board: false,
+        },
+      };
+    }),
+    on(boardsActions.createBoard, (state, { payload }) => {
+      return {
+        ...state,
+        boardList: [...state.boardList, new BoardModel(payload, 'New board')],
+        loading: {
+          ...state.loading,
+          board: false,
+        },
+      };
+    }),
+    on(boardsActions.renameBoard, (state, { id, title }) => {
+      return {
+        ...state,
+        boardList: [...state.boardList.map(board => {
+          if (board.id === id) {
+            return {
+              ...board,
+              title
+            };
+          }
+
+          return board;
+        })],
+      };
+    }),
+    on(boardsActions.removeBoard, (state, { payload }) => {
+      return {
+        ...state,
+        boardList:
+          state.boardList.filter(({ id: boardId }) => payload !== boardId) ?? [],
+        loading: {
+          ...state.loading,
+          board: false,
+        },
+      };
+    }),
 );
 
 export function boardsReducer(

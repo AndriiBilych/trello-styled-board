@@ -59,4 +59,8 @@ export class ControlPanelComponent {
   get isPolish(): boolean {
     return this.#translateService.currentLang === 'pl';
   }
+
+  renameBoard(id: string, title: string): void {
+    this.store.dispatch(boardsActions.renameBoard({ id, title }));
+  }
 }

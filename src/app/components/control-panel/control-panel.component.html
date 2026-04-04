@@ -146,7 +146,7 @@
     <app-input-form
       (textSubmissionAction)="
         toggleIsChangingName();
-        board.title = $event.text.length > 0 ? $event.text : board.title
+        renameBoard(board.id, $event.text);
       "
       [textToShow]="board.title"
     ></app-input-form>

@@ -31,6 +31,8 @@ import { AddTaskComponent } from './components/inputs/add-task/add-task.componen
 import { DropdownComponent } from './components/dropdown/dropdown.component';
 import { boardsReducer } from './state/boards.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
+import {BoardsEffects} from './state/boards.effects';
 
 @NgModule({
   declarations: [
@@ -80,6 +82,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
       traceLimit: 75, // maximum stack trace frames to be stored (in case trace option was provided as true)
       connectInZone: true, // If set to true, the connection is established within the Angular zone
     }),
+
+    EffectsModule.forRoot(BoardsEffects),
   ],
   providers: [provideHttpClient(withInterceptorsFromDi())],
 })
