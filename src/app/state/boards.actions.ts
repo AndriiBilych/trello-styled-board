@@ -4,27 +4,31 @@ import { IBoard } from '../models/interfaces/board.interface';
 
 export enum ActionTypes {
   getBoardList = 'Get Board List',
-  setBoardList = 'Set Board List',
-  getBoard = 'Get Board',
-  setBoard = 'Set Board',
+  getBoardListSuccess = 'Get Board List Success',
+  selectBoard = 'Select Board',
   createBoard = 'Create Board',
+  createBoardSuccess = 'Create Board Success',
   renameBoard = 'Rename Board',
+  renameBoardSuccess = 'Rename Board Success',
   removeBoard = 'Remove Board',
+  removeBoardSuccess = 'Remove Board Success',
   updateBoard = 'Update Board',
-  setBoardsToLocalStorage = 'Set Boards To Local Storage',
+  updateBoardSuccess = 'Update Board Success',
 }
 
 export const boardsActions = createActionGroup({
   source: 'Actions',
   events: {
     [ActionTypes.getBoardList]: emptyProps(),
-    [ActionTypes.setBoardList]: props<{ payload: IBoard[] }>(),
-    [ActionTypes.getBoard]: props<{ payload: string }>(),
-    [ActionTypes.setBoard]: props<{ payload: IBoard }>(),
+    [ActionTypes.getBoardListSuccess]: props<{ payload: IBoard[] }>(),
+    [ActionTypes.selectBoard]: props<{ payload: IBoard }>(),
     [ActionTypes.createBoard]: props<{ payload: string }>(),
+    [ActionTypes.createBoardSuccess]: props<{ payload: string }>(),
     [ActionTypes.renameBoard]: props<{ id: string, title: string }>(),
+    [ActionTypes.renameBoardSuccess]: props<{ id: string, title: string }>(),
     [ActionTypes.removeBoard]: props<{ payload: string }>(),
+    [ActionTypes.removeBoardSuccess]: props<{ payload: string }>(),
     [ActionTypes.updateBoard]: props<{ payload: IBoard }>(),
-    [ActionTypes.setBoardsToLocalStorage]: props<{ payload: IBoard[] }>(),
+    [ActionTypes.updateBoardSuccess]: props<{ payload: IBoard }>(),
   },
 });

@@ -24,7 +24,7 @@ export const initialState: IState = {
 
 const _reducer = createReducer(
     initialState,
-    on(boardsActions.setBoardList, (state: IState, { payload }) => {
+    on(boardsActions.getBoardListSuccess, (state: IState, { payload }) => {
       return {
         ...state,
         boardList: payload,
@@ -34,7 +34,7 @@ const _reducer = createReducer(
         },
       };
     }),
-    on(boardsActions.setBoard, (state, { payload }) => {
+    on(boardsActions.selectBoard, (state, { payload }) => {
       return {
         ...state,
         selectedBoard: payload,
@@ -44,7 +44,7 @@ const _reducer = createReducer(
         },
       };
     }),
-    on(boardsActions.createBoard, (state, { payload }) => {
+    on(boardsActions.createBoardSuccess, (state, { payload }) => {
       return {
         ...state,
         boardList: [...state.boardList, new BoardModel(payload, 'New board')],
@@ -54,7 +54,7 @@ const _reducer = createReducer(
         },
       };
     }),
-    on(boardsActions.renameBoard, (state, { id, title }) => {
+    on(boardsActions.renameBoardSuccess, (state, { id, title }) => {
       return {
         ...state,
         boardList: [...state.boardList.map(board => {
@@ -69,11 +69,24 @@ const _reducer = createReducer(
         })],
       };
     }),
-    on(boardsActions.removeBoard, (state, { payload }) => {
+    on(boardsActions.removeBoardSuccess, (state, { payload }) => {
       return {
         ...state,
         boardList:
           state.boardList.filter(({ id: boardId }) => payload !== boardId) ?? [],
+        loading: {
+          ...state.loading,
+          board: false,
+        },
+      };
+    }),
+    on(boardsActions.updateBoardSuccess, (state, { payload }) => {
+      return {
+        ...state,
+        boardList: [
+          ...state.boardList.filter(({ id: boardId }) => payload.id !== boardId) ?? [],
+            payload
+        ],
         loading: {
           ...state.loading,
           board: false,

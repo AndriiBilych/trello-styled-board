@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {map, take} from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
-import { DataService } from './services/data.service';
-import { BoardModel } from './models/board.model';
 import { Store } from '@ngrx/store';
 import { boardsActions } from './state/boards.actions';
-import {BOARDS_APP_KEY, LocalStorageService} from './services/local-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -19,8 +15,6 @@ export class AppComponent implements OnInit {
   title = 'Boards';
 
   constructor(
-    private readonly dataService: DataService,
-    private readonly localStorageService: LocalStorageService,
     private readonly store: Store,
     private translate: TranslateService,
   ) {
@@ -29,28 +23,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataService
-        .getExampleBoards$()
-        .pipe(
-            take(1),
-            map((list) => {
-                const boardsPresent = this.localStorageService.getKey(BOARDS_APP_KEY);
-                if (boardsPresent) {
-                    return boardsPresent;
-                }
-
-                this.store.dispatch(boardsActions.setBoardsToLocalStorage({payload: list}));
-                return list;
-            })
-        )
-        .subscribe({
-        next: (boards: BoardModel[]) => {
-          this.store.dispatch(boardsActions.setBoardList({ payload: boards }));
-        },
-        error: (err) => {
-          console.error(err);
-          this.store.dispatch(boardsActions.setBoardList({ payload: [] }));
-        },
-        });
+    this.store.dispatch(boardsActions.getBoardList());
   }
 }

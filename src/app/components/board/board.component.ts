@@ -116,7 +116,7 @@ export class BoardComponent
         if (board === undefined) {
           this.routingService.routeToNotFound();
         }
-        this.store.dispatch(boardsActions.setBoard({ payload: board }));
+        this.store.dispatch(boardsActions.selectBoard({ payload: board }));
       });
 
     this.listDraggingService.onMoved$
@@ -156,7 +156,7 @@ export class BoardComponent
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.store.dispatch(boardsActions.setBoard({ payload: null }));
+    this.store.dispatch(boardsActions.selectBoard({ payload: null }));
   }
 
   @HostListener('document:wheel', ['$event'])
