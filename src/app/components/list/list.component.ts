@@ -16,6 +16,7 @@ import { ListDraggingService } from '../../services/list-dragging.service';
 import { BoardModel } from '../../models/board.model';
 import { CalculationService } from '../../services/calculation.service';
 import { makeId } from '../../tools/make-id.tool';
+import {Store} from '@ngrx/store';
 
 @Component({
   selector: 'app-list',
@@ -43,6 +44,7 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   @Input() initListener = false;
 
   @Output() removeListAction = new EventEmitter();
+  @Output() updateList = new EventEmitter<IList>();
 
   @ViewChild('TitleRef') titleRef: ElementRef;
   @ViewChild('ListContainer') listContainer: ElementRef;
@@ -72,7 +74,7 @@ export class ListComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.initListener) {
-      this.titleRef.nativeElement.removeAllListeners();
+      this.titleRef?.nativeElement.removeAllListeners();
     }
   }
 
@@ -96,6 +98,13 @@ export class ListComponent implements AfterViewInit, OnDestroy {
       this.list.tasks.push(new TaskModel(event.text, newId));
       this.isAddingTask = event.keep;
     }
+  }
+
+  renameList(title: { text: string; keep: boolean }): void {
+    this.updateList.emit({
+      ...this.list,
+      title: title.text.length > 0 ? title.text : this.list.title
+    });
   }
 
   private generateNewTaskId(): string {

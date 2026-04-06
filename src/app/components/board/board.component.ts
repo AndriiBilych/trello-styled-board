@@ -33,6 +33,7 @@ import {
   selectSelectedBoard,
 } from '../../state/boards.selectors';
 import { boardsActions } from '../../state/boards.actions';
+import {IList} from '../../models/interfaces/list.interface';
 
 @Component({
   selector: 'app-board',
@@ -55,6 +56,7 @@ export class BoardComponent
 
   isAddingList = false;
   isDraggingTask = false;
+
   @ViewChild('FakeTask') fakeTask: ElementRef;
   @ViewChild('board') boardRef: ElementRef;
   @ViewChild('ListAtMousePosition') listAtMousePosition: ElementRef;
@@ -64,8 +66,8 @@ export class BoardComponent
   #scrollLeft = 0;
   #checkForScrollbarDrag = false;
 
-  lists = viewChildren(ListComponent);
-  tasks = viewChildren(TaskComponent);
+  listRefs = viewChildren(ListComponent);
+  taskRefs = viewChildren(TaskComponent);
 
   listDraggingService = inject(ListDraggingService);
   taskDraggingService = inject(TaskDraggingService);
@@ -93,22 +95,7 @@ export class BoardComponent
   ngOnInit(): void {
     combineLatest([
       this.activatedRoute.params,
-      this.store.select(selectBoardList).pipe(
-        filter(isNotNullOrUndefined),
-        map((boards: BoardModel[] | null) =>
-          boards.map((board) => ({
-            ...board,
-            lists: board.lists.map((list: ListModel) => ({
-              ...list,
-              id: 'list' + list.id,
-              tasks: list.tasks.map((task: TaskModel) => ({
-                ...task,
-                id: `task${task.id}`,
-              })),
-            })),
-          })),
-        ),
-      ),
+      this.store.select(selectBoardList)
     ])
       .pipe(this.takeUntil())
       .subscribe(([{ id }, boards]) => {
@@ -146,8 +133,8 @@ export class BoardComponent
       );
       onInterval(
         () =>
-          this.lists().length === this.selectedBoard.lists.length &&
-          this.tasks().length === taskCount,
+          this.listRefs().length === this.selectedBoard.lists.length &&
+          this.taskRefs().length === taskCount,
         () => this.calculateBoundingInfoForAll(),
         50,
       );
@@ -192,15 +179,15 @@ export class BoardComponent
 
   calculateBoundingInfoForAll(): void {
     this.#calculationService.boundingInfo.clear();
-    this.lists().forEach((list: ListComponent) => list.calculateBoundingInfo());
-    this.tasks().forEach((task: TaskComponent) => task.calculateBoundingInfo());
+    this.listRefs().forEach((list: ListComponent) => list.calculateBoundingInfo());
+    this.taskRefs().forEach((task: TaskComponent) => task.calculateBoundingInfo());
   }
 
   removeList(index: number): void {
-    const length = this.lists().length;
+    const length = this.listRefs().length;
     this.selectedBoard.lists.splice(index, 1);
     const interval = setInterval(() => {
-      if (this.lists().length === length - 1) {
+      if (this.listRefs().length === length - 1) {
         this.calculateBoundingInfoForAll();
         clearInterval(interval);
       }
@@ -208,10 +195,10 @@ export class BoardComponent
   }
 
   removeTask(listIndex: number, taskIndex: number): void {
-    const length = this.tasks().length;
+    const length = this.taskRefs().length;
     this.selectedBoard.lists[listIndex].tasks.splice(taskIndex, 1);
     const interval = setInterval(() => {
-      if (this.tasks().length === length - 1) {
+      if (this.taskRefs().length === length - 1) {
         this.calculateBoundingInfoForAll();
         clearInterval(interval);
       }
@@ -225,6 +212,18 @@ export class BoardComponent
       this.selectedBoard.lists.push(new ListModel(event.text, newId));
       this.isAddingList = event.keep;
     }
+  }
+
+  updateList(list: IList): void {
+    const board = {
+      ...this.selectedBoard,
+      lists: [
+          ...this.selectedBoard.lists.filter((list: ListModel) => list.id !== list.id),
+          list
+      ],
+    };
+
+    this.store.dispatch(boardsActions.updateBoard({payload: board}));
   }
 
   private generateNewListId(): string {

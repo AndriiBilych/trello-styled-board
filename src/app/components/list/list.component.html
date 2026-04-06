@@ -2,25 +2,27 @@
   <div
     class="mx-1.5 dark:text-white dark:bg-gray-600 bg-gray-100 rounded-t-xl group"
   >
-    <div #TitleRef class="flex justify-between px-5 py-2.5" [id]="list.id">
       @if (!isChangingName) {
-        <div class="ellipsis-box-1" [title]="list.title">{{ list.title }}</div>
-        <button
-          (mousedown)="removeListAction.emit()"
-          class="remove-list-button hidden border-none mb-auto"
-        >
-          &times;
-        </button>
+          <div #TitleRef class="flex justify-between px-5 py-2.5" [id]="list.id">
+                <div class="ellipsis-box-1" [title]="list.title">{{ list.title }}</div>
+                <button
+                  (mousedown)="removeListAction.emit()"
+                  class="remove-list-button hidden border-none mb-auto"
+                >
+                  &times;
+                </button>
+          </div>
       } @else {
-        <app-input-form
-          (textSubmissionAction)="
-            isChangingName = false;
-            list.title = $event.text.length > 0 ? $event.text : list.title
-          "
-          [textToShow]="list.title"
-        ></app-input-form>
+        <div class="flex justify-between px-5 py-2.5" [id]="list.id">
+            <app-input-form
+              (textSubmissionAction)="
+                isChangingName = false;
+                renameList($event)
+              "
+              [textToShow]="list.title"
+            ></app-input-form>
+        </div>
       }
-    </div>
   </div>
 
   <div

@@ -23,6 +23,7 @@
       <div class="width-230px relative h-min-content mt-2">
         <app-list
           (removeListAction)="removeList(i)"
+          (updateList)="updateList($event)"
           [list]="list"
           [initListener]="true"
           [selectedBoard]="selectedBoard"
