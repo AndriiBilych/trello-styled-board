@@ -16,7 +16,6 @@ import { ListDraggingService } from '../../services/list-dragging.service';
 import { BoardModel } from '../../models/board.model';
 import { CalculationService } from '../../services/calculation.service';
 import { makeId } from '../../tools/make-id.tool';
-import {Store} from '@ngrx/store';
 
 @Component({
   selector: 'app-list',

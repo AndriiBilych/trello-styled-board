@@ -205,11 +205,19 @@ export class BoardComponent
     }, 50);
   }
 
-  onTextSubmissionAction(event: { text: string; keep: boolean }) {
+  newList(event: { text: string; keep: boolean }): void {
     this.isAddingList = !this.isAddingList;
     if (event?.text?.length) {
-      const newId = this.generateNewListId();
-      this.selectedBoard.lists.push(new ListModel(event.text, newId));
+      const board = {
+        ...this.selectedBoard,
+        lists: [
+          ...this.selectedBoard.lists,
+          new ListModel(event.text, this.generateNewListId())
+        ],
+      };
+
+      this.store.dispatch(boardsActions.updateBoard({payload: board}));
+
       this.isAddingList = event.keep;
     }
   }
@@ -217,13 +225,11 @@ export class BoardComponent
   updateList(list: IList): void {
     const board = {
       ...this.selectedBoard,
-      lists: [
-          ...this.selectedBoard.lists.filter((list: ListModel) => list.id !== list.id),
-          list
-      ],
+      lists: this.selectedBoard.lists.map(item =>
+        item.id === list.id ? list : item
+      ),
     };
-
-    this.store.dispatch(boardsActions.updateBoard({payload: board}));
+    this.store.dispatch(boardsActions.updateBoard({ payload: board }));
   }
 
   private generateNewListId(): string {
