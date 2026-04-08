@@ -17,3 +17,7 @@ export const selectSelectedBoard = createSelector(
 export const selectBoardList = createSelector(selectState, (state: IState) => {
   return state.boardList;
 });
+
+export const selectBoardListLoading = createSelector(selectState, (state: IState) => {
+  return state.loading.list;
+});

@@ -26,8 +26,11 @@ import { TaskComponent } from '../task/task.component';
 import { BoardDraggingService } from '../../services/board-dragging.service';
 import { onInterval } from '../../tools/interval.tool';
 import { Store } from '@ngrx/store';
+import { combineLatest } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import {
   selectBoardList,
+  selectBoardListLoading,
   selectSelectedBoard,
 } from '../../state/boards.selectors';
 import { boardsActions } from '../../state/boards.actions';
@@ -95,15 +98,19 @@ export class BoardComponent
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => this.params = params);
 
-    this.store.select(selectBoardList)
+    combineLatest([
+      this.store.select(selectBoardList),
+      this.store.select(selectBoardListLoading),
+    ])
     .pipe(
+        filter(([, loading]) => !loading),
         this.takeUntil(),
     )
-    .subscribe((boards) => {
-      console.log(boards);
+    .subscribe(([boards]) => {
       const board = boards.find(({ id: boardId }) => boardId === this.params?.id);
       if (board === undefined) {
         this.routingService.routeToNotFound();
+        return;
       }
       this.store.dispatch(boardsActions.selectBoard({ payload: board }));
     });

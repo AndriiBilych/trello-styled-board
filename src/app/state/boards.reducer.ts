@@ -17,7 +17,7 @@ export const initialState: IState = {
   boardList: [],
   selectedBoard: null,
   loading: {
-    list: false,
+    list: true,
     board: false,
   },
 };
