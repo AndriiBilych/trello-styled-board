@@ -37,14 +37,14 @@ export class TaskDraggingService {
 
   public initTaskMouseDownListener(
     element: HTMLElement,
-    selectedBoard: BoardModel,
+    getBoard: () => BoardModel,
     taskAtMousePosition: HTMLElement,
     clickCallback: (e: MouseEvent) => void,
   ): void {
     element.addEventListener(EEvenType.mousedown, () =>
       this.taskMouseDown(
         element,
-        selectedBoard,
+        getBoard,
         taskAtMousePosition,
         clickCallback,
       ),
@@ -53,30 +53,31 @@ export class TaskDraggingService {
 
   private taskMouseDown(
     element: HTMLElement,
-    selectedBoard: BoardModel,
+    getBoard: () => BoardModel,
     taskAtMousePosition: HTMLElement,
     clickCallback: (e: MouseEvent) => void,
   ): void {
     // console.log('[task mouse down]');
 
+    const board = getBoard();
     const taskId = getIdFromAttribute(element);
-    this.sourceListIndex = selectedBoard.lists.findIndex(({ tasks }) => {
+    this.sourceListIndex = board.lists.findIndex(({ tasks }) => {
       this.sourceTaskIndex = tasks.findIndex(({ id }) => taskId === id);
       return this.sourceTaskIndex > -1;
     });
     this.sourceTaskPlaceholderData = {
-      ...selectedBoard.lists[this.sourceListIndex].tasks[this.sourceTaskIndex],
+      ...board.lists[this.sourceListIndex].tasks[this.sourceTaskIndex],
     };
     this.targetTaskIndex = this.sourceTaskIndex;
     this.targetListIndex = this.sourceListIndex;
     this.sourceTaskData =
-      selectedBoard.lists[this.sourceListIndex].tasks[this.sourceTaskIndex];
+      board.lists[this.sourceListIndex].tasks[this.sourceTaskIndex];
 
     const controller = new AbortController();
     const { signal } = controller;
     this.#document.addEventListener(
       EEvenType.mousemove,
-      this.taskMouseMove.bind(this, selectedBoard, taskAtMousePosition),
+      this.taskMouseMove.bind(this, getBoard, taskAtMousePosition),
       { signal },
     );
     this.#document.addEventListener(
@@ -84,7 +85,7 @@ export class TaskDraggingService {
       this.taskMouseUp.bind(
         this,
         controller,
-        selectedBoard,
+        getBoard,
         taskAtMousePosition,
         clickCallback,
       ),
@@ -94,20 +95,21 @@ export class TaskDraggingService {
   }
 
   private taskMouseMove(
-    selectedBoard: BoardModel,
+    getBoard: () => BoardModel,
     taskAtMousePosition: HTMLElement,
     event: MouseEvent,
   ): void {
+    const board = getBoard();
     this.targetListIndex = this.#calculationService.findListIndexByMouseX(
       event.clientX,
     );
     this.targetTaskIndex = this.#calculationService.findTaskIndexByMouseY(
-      selectedBoard.lists[this.targetListIndex].id,
+      board.lists[this.targetListIndex].id,
       event.clientY,
     );
     // console.log('[task mouse move]', this.targetListIndex, this.targetTaskIndex, this.shouldInsert);
     if (!this.shouldInsert) {
-      this.sourceTaskData = selectedBoard.lists[
+      this.sourceTaskData = board.lists[
         this.sourceListIndex
       ].tasks.splice(this.sourceTaskIndex, 1)[0];
       this.shouldInsert = true;
@@ -119,7 +121,7 @@ export class TaskDraggingService {
 
   private taskMouseUp(
     controller: AbortController,
-    selectedBoard: BoardModel,
+    getBoard: () => BoardModel,
     taskAtMousePosition: HTMLElement,
     clickCallback: (e: MouseEvent) => void,
     event: MouseEvent,
@@ -128,7 +130,7 @@ export class TaskDraggingService {
 
     controller.abort();
     if (this.shouldInsert) {
-      selectedBoard.lists[this.targetListIndex].tasks.splice(
+      getBoard().lists[this.targetListIndex].tasks.splice(
         this.targetTaskIndex,
         0,
         this.sourceTaskData,

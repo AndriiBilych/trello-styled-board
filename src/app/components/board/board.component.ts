@@ -9,9 +9,7 @@ import {
   ViewChild,
   viewChildren,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { filter, map } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
+import {ActivatedRoute, Params} from '@angular/router';
 
 import { BoardModel } from '../../models/board.model';
 import { ListModel } from '../../models/list.model';
@@ -65,6 +63,7 @@ export class BoardComponent
   mouseStartingX: number;
   #scrollLeft = 0;
   #checkForScrollbarDrag = false;
+  params: Params;
 
   listRefs = viewChildren(ListComponent);
   taskRefs = viewChildren(TaskComponent);
@@ -86,32 +85,41 @@ export class BoardComponent
 
     this.store.select(selectSelectedBoard).subscribe((board: BoardModel) => {
       if (isNotNullOrUndefined(board)) {
-        this.selectedBoard = board;
+        // Deep clone so drag services can mutate freely; the store state stays frozen/immutable.
+        this.selectedBoard = structuredClone(board);
         this.initBoundingInfo();
       }
     });
   }
 
   ngOnInit(): void {
-    combineLatest([
-      this.activatedRoute.params,
-      this.store.select(selectBoardList)
-    ])
-      .pipe(this.takeUntil())
-      .subscribe(([{ id }, boards]) => {
-        const board = boards.find(({ id: boardId }) => boardId === id);
-        if (board === undefined) {
-          this.routingService.routeToNotFound();
-        }
-        this.store.dispatch(boardsActions.selectBoard({ payload: board }));
-      });
+    this.activatedRoute.params.subscribe(params => this.params = params);
+
+    this.store.select(selectBoardList)
+    .pipe(
+        this.takeUntil(),
+    )
+    .subscribe((boards) => {
+      console.log(boards);
+      const board = boards.find(({ id: boardId }) => boardId === this.params?.id);
+      if (board === undefined) {
+        this.routingService.routeToNotFound();
+      }
+      this.store.dispatch(boardsActions.selectBoard({ payload: board }));
+    });
 
     this.listDraggingService.onMoved$
       .pipe(this.takeUntil())
-      .subscribe(() => this.initBoundingInfo());
+      .subscribe(() => {
+        this.store.dispatch(boardsActions.updateBoard({ payload: this.selectedBoard }));
+        this.initBoundingInfo();
+      });
     this.taskDraggingService.onMoved$
       .pipe(this.takeUntil())
-      .subscribe(() => this.initBoundingInfo());
+      .subscribe(() => {
+        this.store.dispatch(boardsActions.updateBoard({ payload: this.selectedBoard }));
+        this.initBoundingInfo();
+      });
   }
 
   ngAfterViewInit(): void {

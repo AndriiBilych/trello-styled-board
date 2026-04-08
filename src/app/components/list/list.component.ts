@@ -6,6 +6,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  AfterViewChecked,
   OnDestroy,
   inject,
 } from '@angular/core';
@@ -32,9 +33,10 @@ import { makeId } from '../../tools/make-id.tool';
     `,
   ],
 })
-export class ListComponent implements AfterViewInit, OnDestroy {
+export class ListComponent implements AfterViewInit, AfterViewChecked, OnDestroy {
   isAddingTask: boolean;
   isChangingName: boolean;
+  #registeredTitleElement: HTMLElement | null = null;
 
   @Input() list: IList;
   @Input() selectedBoard: BoardModel | null = null;
@@ -62,13 +64,25 @@ export class ListComponent implements AfterViewInit, OnDestroy {
     }
 
     if (this.initListener && this.selectedBoard && this.listAtMousePosition) {
-      this.#listDraggingService.initListMouseDownListener(
-        this.titleRef.nativeElement,
-        this.selectedBoard,
-        this.listAtMousePosition,
-        () => this.onClick(),
-      );
+      this.#registerDragListener(this.titleRef.nativeElement);
     }
+  }
+
+  ngAfterViewChecked(): void {
+    const el = this.titleRef?.nativeElement;
+    if (el && el !== this.#registeredTitleElement && this.initListener && this.selectedBoard && this.listAtMousePosition) {
+      this.#registerDragListener(el);
+    }
+  }
+
+  #registerDragListener(element: HTMLElement): void {
+    this.#registeredTitleElement = element;
+    this.#listDraggingService.initListMouseDownListener(
+      element,
+      () => this.selectedBoard,
+      this.listAtMousePosition,
+      () => this.onClick(),
+    );
   }
 
   ngOnDestroy(): void {

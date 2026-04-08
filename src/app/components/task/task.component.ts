@@ -1,4 +1,5 @@
 import {
+  AfterViewChecked,
   AfterViewInit,
   Component,
   ElementRef,
@@ -56,8 +57,9 @@ import { TaskDraggingService } from '../../services/task-dragging.service';
     `,
   ],
 })
-export class TaskComponent implements AfterViewInit, OnDestroy {
+export class TaskComponent implements AfterViewInit, AfterViewChecked, OnDestroy {
   isChangingTask = false;
+  #registeredTitleElement: HTMLElement | null = null;
 
   @Input() task: ITask;
   @Input() list: IList;
@@ -79,12 +81,14 @@ export class TaskComponent implements AfterViewInit, OnDestroy {
     }
 
     if (this.initListener && this.selectedBoard && this.taskAtMousePosition) {
-      this.#taskDraggingService.initTaskMouseDownListener(
-        this.titleRef.nativeElement,
-        this.selectedBoard,
-        this.taskAtMousePosition,
-        () => this.onClick(),
-      );
+      this.#registerDragListener(this.titleRef.nativeElement);
+    }
+  }
+
+  ngAfterViewChecked(): void {
+    const el = this.titleRef?.nativeElement;
+    if (el && el !== this.#registeredTitleElement && this.initListener && this.selectedBoard && this.taskAtMousePosition) {
+      this.#registerDragListener(el);
     }
   }
 
@@ -92,6 +96,16 @@ export class TaskComponent implements AfterViewInit, OnDestroy {
     if (this.initListener) {
       this.titleRef.nativeElement.removeAllListeners();
     }
+  }
+
+  #registerDragListener(element: HTMLElement): void {
+    this.#registeredTitleElement = element;
+    this.#taskDraggingService.initTaskMouseDownListener(
+      element,
+      () => this.selectedBoard,
+      this.taskAtMousePosition,
+      () => this.onClick(),
+    );
   }
 
   onClick(): void {

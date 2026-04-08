@@ -33,14 +33,14 @@ export class ListDraggingService {
 
   public initListMouseDownListener(
     element: HTMLElement,
-    selectedBoard: BoardModel,
+    getBoard: () => BoardModel,
     listAtMousePosition: HTMLElement,
     clickCallback: (e: MouseEvent) => void,
   ): void {
     element.addEventListener(EEvenType.mousedown, () =>
       this.listMouseDown(
         element,
-        selectedBoard,
+        getBoard,
         listAtMousePosition,
         clickCallback,
       ),
@@ -49,26 +49,27 @@ export class ListDraggingService {
 
   private listMouseDown(
     element: HTMLElement,
-    selectedBoard: BoardModel,
+    getBoard: () => BoardModel,
     listAtMousePosition: HTMLElement,
     clickCallback: (e: MouseEvent) => void,
   ): void {
     // console.log('[list mouse down]');
+    const board = getBoard();
     const listId = getIdFromAttribute(element);
-    this.sourceListIndex = selectedBoard.lists.findIndex(
+    this.sourceListIndex = board.lists.findIndex(
       ({ id }) => id === listId,
     );
     this.sourceListPlaceholderData = {
-      ...selectedBoard.lists[this.sourceListIndex],
+      ...board.lists[this.sourceListIndex],
     };
     this.targetListIndex = this.sourceListIndex;
-    this.sourceListData = selectedBoard.lists[this.sourceListIndex];
+    this.sourceListData = board.lists[this.sourceListIndex];
 
     const controller = new AbortController();
     const { signal } = controller;
     this.#document.addEventListener(
       EEvenType.mousemove,
-      this.listMouseMove.bind(this, selectedBoard, listAtMousePosition),
+      this.listMouseMove.bind(this, getBoard, listAtMousePosition),
       { signal },
     );
     this.#document.addEventListener(
@@ -76,7 +77,7 @@ export class ListDraggingService {
       this.listMouseUp.bind(
         this,
         controller,
-        selectedBoard,
+        getBoard,
         listAtMousePosition,
         clickCallback,
       ),
@@ -86,7 +87,7 @@ export class ListDraggingService {
   }
 
   private listMouseMove(
-    selectedBoard: BoardModel,
+    getBoard: () => BoardModel,
     listAtMousePosition: HTMLElement,
     event: MouseEvent,
   ): void {
@@ -95,7 +96,7 @@ export class ListDraggingService {
       event.clientX,
     );
     if (!this.shouldInsert) {
-      this.sourceListData = selectedBoard.lists.splice(
+      this.sourceListData = getBoard().lists.splice(
         this.sourceListIndex,
         1,
       )[0];
@@ -108,7 +109,7 @@ export class ListDraggingService {
 
   private listMouseUp(
     controller: AbortController,
-    selectedBoard: BoardModel,
+    getBoard: () => BoardModel,
     listAtMousePosition: HTMLElement,
     clickCallback: (e: MouseEvent) => void,
     event: MouseEvent,
@@ -116,7 +117,7 @@ export class ListDraggingService {
     // console.log('[list mouse up]', this.shouldInsert);
     controller.abort();
     if (this.shouldInsert) {
-      selectedBoard.lists.splice(this.targetListIndex, 0, this.sourceListData);
+      getBoard().lists.splice(this.targetListIndex, 0, this.sourceListData);
       this.#onMoved.next(true);
       this.shouldInsert = false;
     } else {
